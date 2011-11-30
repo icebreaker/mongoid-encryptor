@@ -37,9 +37,18 @@ module Mongoid #:nodoc:
       #
       # @param [String] key
       # @return [Object]
-      def read_attribute_for_validation(key)
-        v = read_attribute(key)
-        v.try(:encrypted?) ? v.decrypt : v
+      def read_attribute_for_validation(attr)
+        v = send(attr)
+        v = (v.respond_to?(:encrypted?) && v.try(:encrypted?)) ? v.decrypt : v
+        
+       if relations[attr.to_s]
+          begin_validate
+          relation = v
+          exit_validate
+          relation.do_or_do_not(:in_memory) || relation
+        else
+          v
+        end
       end
 
       private
