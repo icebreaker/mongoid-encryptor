@@ -47,7 +47,7 @@ module Mongoid #:nodoc:
           exit_validate
           relation.do_or_do_not(:in_memory) || relation
         else
-          v
+          super(attr)
         end
       end
 
