@@ -39,7 +39,7 @@ module Mongoid #:nodoc:
       # @return [Object]
       def read_attribute_for_validation(attr)
         v = send(attr)
-        v = (v.respond_to?(:encrypted?) && v.try(:encrypted?)) ? v.decrypt : v
+        v = (v.respond_to?(:encrypted?) && v.try(:encrypted?)) ? v.decrypt : super(attr)
         
        if relations[attr.to_s]
           begin_validate
@@ -47,7 +47,7 @@ module Mongoid #:nodoc:
           exit_validate
           relation.do_or_do_not(:in_memory) || relation
         else
-          super(attr)
+          v
         end
       end
 
